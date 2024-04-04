@@ -1,6 +1,15 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const openAIIntegration = /* GraphQL */ `
+  mutation OpenAIIntegration($text: String!) {
+    openAIIntegration(text: $text) {
+      id
+      text
+      __typename
+    }
+  }
+`;
 export const createNote = /* GraphQL */ `
   mutation CreateNote(
     $input: CreateNoteInput!

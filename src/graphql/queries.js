@@ -1,6 +1,15 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const getMyData = /* GraphQL */ `
+  query GetMyData($id: ID!) {
+    getMyData(id: $id) {
+      id
+      value
+      __typename
+    }
+  }
+`;
 export const getNote = /* GraphQL */ `
   query GetNote($id: ID!) {
     getNote(id: $id) {

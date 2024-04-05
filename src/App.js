@@ -53,7 +53,7 @@ import {
   View,
   withAuthenticator,
 } from "@aws-amplify/ui-react";
-import { listNotes } from "./graphql/queries";
+import { listNotes, getMyData } from "./graphql/queries";
 import {
   createNote as createNoteMutation,
   deleteNote as deleteNoteMutation,
@@ -67,6 +67,8 @@ const client = generateClient();
 const App = ({ signOut }) => {
   const [notes, setNotes] = useState([]);
   const [text, setText] = useState('');
+  const [data, setData] = useState(null);
+  const [display, setDisplay] = useState('');
 
   useEffect(() => {
     fetchNotes();
@@ -121,25 +123,68 @@ const App = ({ signOut }) => {
   async function requestAi({ text }) {
     if (!text) return;
     console.log(text);
+    setDisplay('');
 
     try {
-      const response = await client.graphql({
-        query: openAIIntegration, 
-        variables: { text }
-      });
-      // const response = await client.graphql(graphqlOperation(openAIIntegration, { input: { text } }));
+      const response = await client.graphql(
+        { query: getMyData,
+          variables: {
+            id: text
+          } 
+        }
+      );
       console.log(response);
+      // setData(response.data.getMyData);
+      setData(response.data.getMyData);
+      // const response = await client.graphql(graphqlOperation(openAIIntegration, { input: { text } }));
     } catch (error) {
       console.error(error);
     }
+
+    // try {
+    //   const response = await client.graphql({
+    //     query: openAIIntegration, 
+    //     variables: { text }
+    //   });
+    //   // const response = await client.graphql(graphqlOperation(openAIIntegration, { input: { text } }));
+    //   console.log(response);
+    // } catch (error) {
+    //   console.error(error);
+    // }
   }
+  useEffect(() => {
+    if (data) {
+      let i = 0;
+      setDisplay(data.value.charAt(i));  // Display the first character
+      const intervalId = setInterval(() => {
+        i++;
+        if (i < data.value.length) {
+          setDisplay((prevDisplay) => prevDisplay + data.value.charAt(i));
+        } else {
+          clearInterval(intervalId);
+        }
+      }, 100);  // Change the interval as needed
+  
+      // Clean up the interval on unmount
+      return () => clearInterval(intervalId);
+    }
+  }, [data]);
 
   return (
     <View className="App">
       <Heading level={1}>My Notes App</Heading>
       <div>
         <textarea value={text} onChange={e => setText(e.target.value)} />
+        <br />
         <button onClick={() => requestAi({text})}>AI生成</button>
+        <br />
+        <h2>:結果:</h2>
+        {display && (
+        <div style={{ textAlign: 'left' }}>  {/* Add this line */}
+          <p>{display}</p>
+        </div>
+        )}
+
     </div>
       <View as="form" margin="3rem 0" onSubmit={createNote}>
         <Flex direction="row" justifyContent="center">

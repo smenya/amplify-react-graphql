@@ -17,3 +17,12 @@ type OpenAIResponse {
   id: ID!
   text: String
 }
+
+type Query {
+    getMyData(id: ID!): MyData
+}
+
+type MyData {
+    id: ID!
+    value: String
+} 

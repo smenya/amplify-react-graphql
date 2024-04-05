@@ -40,7 +40,7 @@
 
 // export default withAuthenticator(App);
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, lazy } from "react";
 import "./App.css";
 import "@aws-amplify/ui-react/styles.css";
 import {
@@ -57,6 +57,7 @@ import { listNotes } from "./graphql/queries";
 import {
   createNote as createNoteMutation,
   deleteNote as deleteNoteMutation,
+  openAIIntegration,
 } from "./graphql/mutations";
 import { generateClient } from 'aws-amplify/api';
 import { uploadData, getUrl, remove } from 'aws-amplify/storage';
@@ -65,6 +66,7 @@ const client = generateClient();
 
 const App = ({ signOut }) => {
   const [notes, setNotes] = useState([]);
+  const [text, setText] = useState('');
 
   useEffect(() => {
     fetchNotes();
@@ -116,9 +118,29 @@ const App = ({ signOut }) => {
     });
   }
 
+  async function requestAi({ text }) {
+    if (!text) return;
+    console.log(text);
+
+    try {
+      const response = await client.graphql({
+        query: openAIIntegration, 
+        variables: { text }
+      });
+      // const response = await client.graphql(graphqlOperation(openAIIntegration, { input: { text } }));
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   return (
     <View className="App">
       <Heading level={1}>My Notes App</Heading>
+      <div>
+        <textarea value={text} onChange={e => setText(e.target.value)} />
+        <button onClick={() => requestAi({text})}>AI生成</button>
+    </div>
       <View as="form" margin="3rem 0" onSubmit={createNote}>
         <Flex direction="row" justifyContent="center">
           <TextField

@@ -172,7 +172,8 @@ const App = ({ signOut }) => {
 
   return (
     <View className="App">
-      <Heading level={1}>My Notes App</Heading>
+      <Heading level={1}>AI生成</Heading>
+      {/* <Heading level={1}>My Notes App</Heading> */}
       <div>
         <textarea value={text} onChange={e => setText(e.target.value)} />
         <br />
@@ -186,7 +187,7 @@ const App = ({ signOut }) => {
         )}
 
     </div>
-      <View as="form" margin="3rem 0" onSubmit={createNote}>
+      {/* <View as="form" margin="3rem 0" onSubmit={createNote}>
         <Flex direction="row" justifyContent="center">
           <TextField
             name="name"
@@ -240,7 +241,7 @@ const App = ({ signOut }) => {
             </Button>
           </Flex>
         ))}
-      </View>
+      </View> */}
       <Button onClick={signOut}>Sign Out</Button>
     </View>
   );
